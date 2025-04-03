@@ -344,103 +344,105 @@ function AutoGenerators({
   }, [activeGenerators, clickPower, setVibe]);
 
 
+  const isAIAgentEnabled = (aiAgent.components.processingUnit.count.isGreaterThan(0) || vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost))
+
+
   return (
     <>
       {/* AI Agent Section - Show if you have one or can afford one */}
-      {(aiAgent.components.processingUnit.count.isGreaterThan(0) || vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost)) && (
-        <div className="mt-12 w-full bg-gray-800 bg-opacity-50 p-6 rounded-lg relative overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-center mb-2">AI Agent</h2>
-              <p className="text-sm text-gray-300 text-center max-w-2xl">
-                A sophisticated system composed of advanced components that work together to maximize Vibe production
-              </p>
+
+      <div className={`mt-12 w-full bg-gray-800 bg-opacity-50 p-6 rounded-lg relative overflow-hidden ${isAIAgentEnabled ? 'opacity-100' : 'opacity-50'}`}>
+        <div className="relative z-10">
+          <div className="flex flex-col items-center mb-6">
+            <h2 className="text-3xl font-bold text-center mb-2">AI Agent</h2>
+            <p className="text-sm text-gray-300 text-center max-w-2xl">
+              A sophisticated system composed of advanced components that work together to maximize Vibe production
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Processing Unit */}
+            <div className="p-6 bg-gray-700 rounded-lg relative overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex flex-col items-center mb-4">
+                  <h3 className="text-2xl font-bold text-center mb-2">{AI_AGENT.components.processingUnit.name}</h3>
+                  <p className="text-sm text-gray-300 text-center">{AI_AGENT.components.processingUnit.description}</p>
+                </div>
+
+                {aiAgent.components.processingUnit.count.isEqualTo(0) ? (
+                  <button
+                    onClick={() => handlePurchaseComponent('processingUnit')}
+                    disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost)}
+                    className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost) ? 'btn-primary' : 'btn-disabled'} w-full mb-4`}
+                  >
+                    Buy ({formatVibeWithSi(AI_AGENT.components.processingUnit.baseCost)})
+                  </button>
+                ) : (
+                  <>
+                    <div className="bg-gray-800 p-4 rounded-lg mb-4">
+                      <p className="text-lg font-semibold text-center mb-2">
+                        {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].name}
+                      </p>
+                      <p className="text-sm text-gray-300 text-center">
+                        {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].description}
+                      </p>
+                    </div>
+                    {aiAgent.components.processingUnit.level < AI_AGENT.components.processingUnit.levels.length && (
+                      <button
+                        onClick={() => handleUpgradeComponent('processingUnit')}
+                        disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost)}
+                        className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost) ? 'btn-primary' : 'btn-disabled'} w-full`}
+                      >
+                        Upgrade to {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level].name} ({formatVibeWithSi(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost)})
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Processing Unit */}
-              <div className="p-6 bg-gray-700 rounded-lg relative overflow-hidden">
-                <div className="relative z-10">
-                  <div className="flex flex-col items-center mb-4">
-                    <h3 className="text-2xl font-bold text-center mb-2">{AI_AGENT.components.processingUnit.name}</h3>
-                    <p className="text-sm text-gray-300 text-center">{AI_AGENT.components.processingUnit.description}</p>
-                  </div>
-
-                  {aiAgent.components.processingUnit.count.isEqualTo(0) ? (
-                    <button
-                      onClick={() => handlePurchaseComponent('processingUnit')}
-                      disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost)}
-                      className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.baseCost) ? 'btn-primary' : 'btn-disabled'} w-full mb-4`}
-                    >
-                      Buy ({formatVibeWithSi(AI_AGENT.components.processingUnit.baseCost)})
-                    </button>
-                  ) : (
-                    <>
-                      <div className="bg-gray-800 p-4 rounded-lg mb-4">
-                        <p className="text-lg font-semibold text-center mb-2">
-                          {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].name}
-                        </p>
-                        <p className="text-sm text-gray-300 text-center">
-                          {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].description}
-                        </p>
-                      </div>
-                      {aiAgent.components.processingUnit.level < AI_AGENT.components.processingUnit.levels.length && (
-                        <button
-                          onClick={() => handleUpgradeComponent('processingUnit')}
-                          disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost)}
-                          className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost) ? 'btn-primary' : 'btn-disabled'} w-full`}
-                        >
-                          Upgrade to {AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level].name} ({formatVibeWithSi(AI_AGENT.components.processingUnit.levels[aiAgent.components.processingUnit.level - 1].upgradeCost)})
-                        </button>
-                      )}
-                    </>
-                  )}
+            {/* Power Core */}
+            <div className="p-6 bg-gray-700 rounded-lg relative overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex flex-col items-center mb-4">
+                  <h3 className="text-2xl font-bold text-center mb-2">{AI_AGENT.components.powerCore.name}</h3>
+                  <p className="text-sm text-gray-300 text-center">{AI_AGENT.components.powerCore.description}</p>
                 </div>
-              </div>
 
-              {/* Power Core */}
-              <div className="p-6 bg-gray-700 rounded-lg relative overflow-hidden">
-                <div className="relative z-10">
-                  <div className="flex flex-col items-center mb-4">
-                    <h3 className="text-2xl font-bold text-center mb-2">{AI_AGENT.components.powerCore.name}</h3>
-                    <p className="text-sm text-gray-300 text-center">{AI_AGENT.components.powerCore.description}</p>
-                  </div>
-
-                  {aiAgent.components.powerCore.count.isEqualTo(0) ? (
-                    <button
-                      onClick={() => handlePurchaseComponent('powerCore')}
-                      disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.baseCost)}
-                      className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.baseCost) ? 'btn-primary' : 'btn-disabled'} w-full mb-4`}
-                    >
-                      Buy ({formatVibeWithSi(AI_AGENT.components.powerCore.baseCost)})
-                    </button>
-                  ) : (
-                    <>
-                      <div className="bg-gray-800 p-4 rounded-lg mb-4">
-                        <p className="text-lg font-semibold text-center mb-2">
-                          {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].name}
-                        </p>
-                        <p className="text-sm text-gray-300 text-center">
-                          {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].description}
-                        </p>
-                      </div>
-                      {aiAgent.components.powerCore.level < AI_AGENT.components.powerCore.levels.length && (
-                        <button
-                          onClick={() => handleUpgradeComponent('powerCore')}
-                          disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost)}
-                          className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost) ? 'btn-primary' : 'btn-disabled'} w-full`}
-                        >
-                          Upgrade to {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level].name} ({formatVibeWithSi(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost)})
-                        </button>
-                      )}
-                    </>
-                  )}
-                </div>
+                {aiAgent.components.powerCore.count.isEqualTo(0) ? (
+                  <button
+                    onClick={() => handlePurchaseComponent('powerCore')}
+                    disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.baseCost)}
+                    className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.baseCost) ? 'btn-primary' : 'btn-disabled'} w-full mb-4`}
+                  >
+                    Buy ({formatVibeWithSi(AI_AGENT.components.powerCore.baseCost)})
+                  </button>
+                ) : (
+                  <>
+                    <div className="bg-gray-800 p-4 rounded-lg mb-4">
+                      <p className="text-lg font-semibold text-center mb-2">
+                        {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].name}
+                      </p>
+                      <p className="text-sm text-gray-300 text-center">
+                        {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].description}
+                      </p>
+                    </div>
+                    {aiAgent.components.powerCore.level < AI_AGENT.components.powerCore.levels.length && (
+                      <button
+                        onClick={() => handleUpgradeComponent('powerCore')}
+                        disabled={!vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost)}
+                        className={`btn ${vibe.isGreaterThanOrEqualTo(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost) ? 'btn-primary' : 'btn-disabled'} w-full`}
+                      >
+                        Upgrade to {AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level].name} ({formatVibeWithSi(AI_AGENT.components.powerCore.levels[aiAgent.components.powerCore.level - 1].upgradeCost)})
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Vibe Producers Section - Only show after buying an AI Agent */}
       {aiAgent.components.processingUnit.count.isGreaterThan(0) && (

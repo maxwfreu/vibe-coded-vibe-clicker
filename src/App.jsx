@@ -24,7 +24,7 @@ const Credits = () => {
       </p>
       <div className="w-1 h-1 bg-indigo-800 rounded-full"></div>
       <p>
-        Matrix background by{" "}
+        Background by{" "}
         <a
           href="https://codepen.io/wefiy/pen/WPpEwo"
           target="_blank"

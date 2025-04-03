@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Clicker</title>
+    <style>
+      #c {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Wait for the canvas element to exist
+      const checkCanvas = setInterval(() => {
+        const canvas = document.getElementById('c');
+        if (canvas) {
+          clearInterval(checkCanvas);
+          runMatrixEffect(canvas);
+        }
+      }, 100);
+
+      function runMatrixEffect(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const charArray = chars.split("");
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+          drops[i] = 1;
+        }
+
+        function draw() {
+          ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#f4427d";
+          ctx.font = fontSize + "px monospace";
+
+          for (let i = 0; i < drops.length; i++) {
+            const text = charArray[Math.floor(Math.random() * charArray.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+              drops[i] = 0;
+            }
+            drops[i]++;
+          }
+        }
+
+        setInterval(draw, 33);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          const newColumns = canvas.width / fontSize;
+          
+          // Preserve existing drops
+          const oldDrops = [...drops];
+          drops.length = 0;
+          
+          // Adjust drops array for new width
+          for (let i = 0; i < newColumns; i++) {
+            if (i < oldDrops.length) {
+              drops[i] = oldDrops[i];
+            } else {
+              drops[i] = 1;
+            }
+          }
+        });
+      }
+    </script>
+  </body>
+</html> 
